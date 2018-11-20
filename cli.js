@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const build = require('./build');
 const server = require('./server');
 console.log('arg', process.argv[1]);
