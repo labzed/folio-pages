@@ -52,7 +52,7 @@ async function getAllEntries(templatesDirectory) {
   return entries;
 }
 
-module.exports = async function generateWebpackConfig(rootDirectory) {
+module.exports = async function createWebpackConfigList(rootDirectory) {
   if (!rootDirectory) {
     rootDirectory = process.cwd();
   }
@@ -67,8 +67,5 @@ module.exports = async function generateWebpackConfig(rootDirectory) {
   const webpackConfigList = entries.map(e =>
     createWebpackConfig(e.name, e.source, outputDirectory)
   );
-  // return;
-  console.log(webpackConfigList);
-
   return webpackConfigList;
 };
