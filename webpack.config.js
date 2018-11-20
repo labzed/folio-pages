@@ -3,37 +3,37 @@ const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: {
-    launcher: './src/launcher.js',
-    invoice: './src/templates/invoice.js',
-    proposal: './src/templates/proposal.js'
-  },
+  context: __dirname,
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                require.resolve('@babel/preset-env'),
+                {
+                  useBuiltIns: 'usage'
+                }
+              ],
+              require.resolve('@babel/preset-react')
+            ]
+          }
         }
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
       }
     ]
-  },
-  plugins: [
-    new HtmlWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      filename: 'invoice.html',
-      chunks: ['invoice']
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'proposal.html',
-      chunks: ['proposal']
-    }),
-    new HtmlWebpackRootPlugin()
-  ],
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
   }
+  // plugins:
+  // optimization: {
+  //   splitChunks: {
+  //     chunks: 'all'
+  //   }
+  // }
 };
