@@ -1,18 +1,34 @@
 const webpack = require('webpack');
-const WebpackDevServer = require('webpack-dev-server');
-//const webpackConfig = require('./webpack.config');
+const webpackDevServer = require('webpack-dev-server');
+const ErrorOverlayWebpackPlugin = require('error-overlay-webpack-plugin');
 const generateWebpackConfig = require('./generate-webpack-config');
+const path = require('path');
 
 module.exports = async function server(rootDirectory) {
+  rootDirectory = rootDirectory || process.cwd();
   const webpackConfig = await generateWebpackConfig(rootDirectory);
-  const compiler = webpack(webpackConfig);
+
   const devServerOptions = {
+    // publicPath: 'build',
+    host: 'localhost',
+    port: '8080',
+    contentBase: false,
+    hot: true,
+    overlay: true,
     stats: {
       colors: true
     }
   };
 
-  const server = new WebpackDevServer(compiler, devServerOptions);
+  webpackDevServer.addDevServerEntrypoints(webpackConfig, devServerOptions);
+  webpackConfig.forEach(config => {
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+    // config.plugins.push(new ErrorOverlayWebpackPlugin());
+  });
+  console.log(webpackConfig);
+
+  const compiler = webpack(webpackConfig);
+  const server = new webpackDevServer(compiler, devServerOptions);
 
   return new Promise((resolve, reject) => {
     server.listen(8080, '127.0.0.1', () => {

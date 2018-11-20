@@ -13,16 +13,17 @@ function createWebpackConfig(name, documentSourcePath, outputDirectory) {
   // config.entry = documentSourcePath;
   config.entry = path.resolve(__dirname, 'src/launcher.js');
   config.output = {
-    filename: name + '.js',
-    path: outputDirectory
+    filename: name + '.bundle.js',
+    path: outputDirectory,
+    publicPath: '/'
   };
   config.plugins = [
     new HtmlWebpackPlugin({
-      filename: name + '.html',
-      inlineSource: '.(js|css)$'
+      filename: name + '.html'
+      // inlineSource: '.(js|css)$'
     }),
-    new HtmlWebpackRootPlugin(),
-    new HtmlWebpackInlineSourcePlugin()
+    // new HtmlWebpackInlineSourcePlugin(),
+    new HtmlWebpackRootPlugin()
   ];
 
   config.resolve = {

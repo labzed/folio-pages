@@ -4,6 +4,7 @@ const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 module.exports = {
   mode: 'development',
   context: __dirname,
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {

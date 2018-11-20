@@ -32,3 +32,10 @@ async function run() {
 }
 
 run();
+
+if (module.hot) {
+  module.hot.accept('the-current-document', () => {
+    // Do something with the updated library module...
+    run();
+  });
+}
