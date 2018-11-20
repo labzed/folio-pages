@@ -1,12 +1,6 @@
 {
-  "name": "folio-server",
+  "name": "folio-pages",
   "version": "0.0.0",
-  "scripts": {
-    "build": "webpack --mode production",
-    "clean": "rm -rf ./dist",
-    "format": "prettier --write --single-quote --ignore-path .gitignore \"**/*.{js,json,css,md}\"",
-    "start": "webpack-dev-server"
-  },
   "bin": "./cli.js",
   "dependencies": {
     "@babel/core": "^7.1.6",
