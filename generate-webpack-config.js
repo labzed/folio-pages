@@ -7,7 +7,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-function createWebpackConfig(name, documentSourcePath, outputDirectory) {
+function createWebpackConfig(name, documentSourcePath, outputDirectory, rootDirectory) {
   const config = clone(webpackConfig);
 
   // config.entry = documentSourcePath;
@@ -30,7 +30,9 @@ function createWebpackConfig(name, documentSourcePath, outputDirectory) {
     alias: {
       'the-current-document': documentSourcePath
     },
-    modules: [process.cwd() + '/node_modules', __dirname + '/node_modules'] // instead of local node_modules I guess?
+    // The following allows to load modules such as React from the parent package.
+    // TODO: consider an alternative lookup to avoid relying on CWD.
+    modules: [path.join(rootDirectory, 'node_modules'), path.join(__dirname, 'node_modules')]
   };
 
   return config;
@@ -62,11 +64,8 @@ module.exports = async function createWebpackConfigList(rootDirectory) {
   const outputDirectory = path.join(rootDirectory, 'build');
   console.log('Looking for templates in:', templatesDirectory);
   const entries = await getAllEntries(templatesDirectory);
-  // return;
-  // webpackConfig.entry = entries;
-  // webpackConfig.context = __dirname;
   const webpackConfigList = entries.map(e =>
-    createWebpackConfig(e.name, e.source, outputDirectory)
+    createWebpackConfig(e.name, e.source, outputDirectory, rootDirectory)
   );
   return webpackConfigList;
 };
