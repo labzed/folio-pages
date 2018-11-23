@@ -7,7 +7,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-function createWebpackConfig(name, documentSourcePath, outputDirectory, rootDirectory) {
+function createWebpackConfig(
+  name,
+  documentSourcePath,
+  outputDirectory,
+  rootDirectory
+) {
   const config = clone(webpackConfig);
 
   // config.entry = documentSourcePath;
@@ -32,7 +37,10 @@ function createWebpackConfig(name, documentSourcePath, outputDirectory, rootDire
     },
     // The following allows to load modules such as React from the parent package.
     // TODO: consider an alternative lookup to avoid relying on CWD.
-    modules: [path.join(rootDirectory, 'node_modules'), path.join(__dirname, 'node_modules')]
+    modules: [
+      path.join(rootDirectory, 'node_modules'),
+      path.join(__dirname, 'node_modules')
+    ]
   };
 
   return config;
