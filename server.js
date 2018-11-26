@@ -4,12 +4,15 @@ const ErrorOverlayWebpackPlugin = require('error-overlay-webpack-plugin');
 const generateWebpackConfig = require('./generate-webpack-config');
 const path = require('path');
 
-module.exports = async function server(rootDirectory) {
+module.exports = async function server({ rootDirectory, publicPath }) {
   rootDirectory = rootDirectory || process.cwd();
-  const webpackConfig = await generateWebpackConfig(rootDirectory);
+  const webpackConfig = await generateWebpackConfig({
+    rootDirectory,
+    publicPath
+  });
 
   const devServerOptions = {
-    // publicPath: 'build',
+    publicPath,
     host: 'localhost',
     port: '8080',
     contentBase: false,

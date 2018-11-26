@@ -4,7 +4,7 @@ const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 module.exports = {
   mode: 'development',
   context: __dirname,
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -13,6 +13,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
+            plugins: [
+              require.resolve('@babel/plugin-proposal-class-properties')
+            ],
             presets: [
               [
                 require.resolve('@babel/preset-env'),

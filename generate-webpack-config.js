@@ -7,12 +7,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-function createWebpackConfig(
-  name,
-  documentSourcePath,
-  outputDirectory,
-  rootDirectory
-) {
+function createWebpackConfig(options) {
+  const {
+    name,
+    documentSourcePath,
+    outputDirectory,
+    rootDirectory,
+    publicPath = '/'
+  } = options;
   const config = clone(webpackConfig);
 
   // config.entry = documentSourcePath;
@@ -20,7 +22,7 @@ function createWebpackConfig(
   config.output = {
     filename: name + '.bundle.js',
     path: outputDirectory,
-    publicPath: '/'
+    publicPath
   };
   config.plugins = [
     new HtmlWebpackPlugin({
@@ -46,6 +48,10 @@ function createWebpackConfig(
   return config;
 }
 
+// FIXME
+// If there are no template files, then an empty array gets created.
+// This causes webpack to crash because it doesn't know what to do with an
+// empty array.
 async function getAllEntries(templatesDirectory) {
   const files = await globby('*.js', { cwd: templatesDirectory });
   files.forEach(f => console.log('-> ', f));
@@ -63,7 +69,10 @@ async function getAllEntries(templatesDirectory) {
   return entries;
 }
 
-module.exports = async function createWebpackConfigList(rootDirectory) {
+module.exports = async function createWebpackConfigList({
+  rootDirectory,
+  publicPath = '/'
+}) {
   if (!rootDirectory) {
     rootDirectory = process.cwd();
   }
@@ -71,9 +80,16 @@ module.exports = async function createWebpackConfigList(rootDirectory) {
   const templatesDirectory = path.join(rootDirectory, 'templates');
   const outputDirectory = path.join(rootDirectory, 'build');
   console.log('Looking for templates in:', templatesDirectory);
+  console.log('Building with publicPath=', publicPath);
   const entries = await getAllEntries(templatesDirectory);
   const webpackConfigList = entries.map(e =>
-    createWebpackConfig(e.name, e.source, outputDirectory, rootDirectory)
+    createWebpackConfig({
+      name: e.name,
+      documentSourcePath: e.source,
+      outputDirectory,
+      rootDirectory,
+      publicPath
+    })
   );
   return webpackConfigList;
 };
