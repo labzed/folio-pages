@@ -4,6 +4,7 @@ const generateWebpackConfig = require('./generate-webpack-config');
 
 module.exports = async function middleware({ publicPath, rootDirectory }) {
   rootDirectory = rootDirectory || process.cwd();
+  console.log('rootDirectory provided as', rootDirectory);
   const webpackConfig = await generateWebpackConfig({
     rootDirectory,
     publicPath

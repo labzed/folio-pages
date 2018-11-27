@@ -77,8 +77,10 @@ module.exports = async function createWebpackConfigList({
     rootDirectory = process.cwd();
   }
 
+  rootDirectory = path.resolve(rootDirectory);
+
   const templatesDirectory = path.join(rootDirectory, 'templates');
-  const outputDirectory = path.join(rootDirectory, 'build');
+  const outputDirectory = path.join(rootDirectory, 'build', publicPath);
   console.log('Looking for templates in:', templatesDirectory);
   console.log('Building with publicPath=', publicPath);
   const entries = await getAllEntries(templatesDirectory);

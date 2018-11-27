@@ -2,7 +2,22 @@
 const build = require('./build');
 const server = require('./server');
 const server2 = require('./express-server');
-const mode = (process.argv[2] || '').trim().toLowerCase();
+const meow = require('meow');
+
+const cli = meow({
+  flags: {
+    publicPath: {
+      type: 'string',
+      alias: 'p'
+    },
+    rootDirectory: {
+      type: 'string',
+      alias: 'd'
+    }
+  }
+});
+
+const mode = (cli.input[0] || '').trim().toLowerCase();
 
 switch (mode) {
   case 'build':
@@ -11,21 +26,21 @@ switch (mode) {
     // It only affects the prefix on the assets paths inside the html file.
     // But, in dev server and dev middleware, there is a devServer.publicPath which
     // is used by the server to serve the html files (and assets) on that path.
-    build({ publicPath: '/foonzo' }).catch(error => {
+    build(cli.flags).catch(error => {
       console.error(error);
       process.exit(1);
     });
     break;
 
   case 'serve':
-    server({ publicPath: '/fooboo' });
+    server(cli.flags);
     break;
 
   case 'serve2':
-    server2({ publicPath: '/foonzo' });
+    server2(cli.flags);
     break;
 
   default:
-    console.log('build or serve');
+    console.log('Usage: "folio-pages build" or "folio-pages serve"');
     break;
 }
