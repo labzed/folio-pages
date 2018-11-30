@@ -1,5 +1,11 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackRootPlugin = require('html-webpack-root-plugin');
+const babelPresetEnv = require.resolve('@babel/preset-env');
+const babelPresetReact = require.resolve('@babel/preset-react');
+
+console.log({
+  babelPresetEnv, babelPresetReact
+});
 
 module.exports = {
   mode: 'development',
@@ -18,12 +24,12 @@ module.exports = {
             ],
             presets: [
               [
-                require.resolve('@babel/preset-env'),
+                babelPresetEnv,
                 {
                   useBuiltIns: 'usage'
                 }
               ],
-              require.resolve('@babel/preset-react')
+              babelPresetReact
             ]
           }
         }
