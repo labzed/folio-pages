@@ -14,6 +14,15 @@ function getPayloadFromHashFragment() {
   return tryParseJson(payloadJson);
 }
 
+function getPayloadFromMessage(input) {
+  const prefix = 'payload:';
+  if (typeof input === 'string' && input.startsWith(prefix)) {
+    input = input.slice(0, prefix.length);
+    return tryParseJson(input);
+  }
+  return null;
+}
+
 function tryParseJson(input) {
   if (typeof input !== 'string' || !input.length) {
     return null;
@@ -27,7 +36,6 @@ function tryParseJson(input) {
 }
 
 window.addEventListener('hashchange', () => {
-  console.log('Hash change');
   const payload = getPayloadFromHashFragment();
   if (payload) {
     render(payload);
@@ -35,8 +43,10 @@ window.addEventListener('hashchange', () => {
 });
 
 window.addEventListener('message', message => {
-  const payload = tryParseJson(message.data);
+  const payload = getPayloadFromMessage(message.data);
   if (!payload) {
+    // This is perfectly fine because we just ignore messages that don't match
+    // out format.
     console.warn(
       'Incoming message not recognized as a payload string',
       message.data
@@ -48,12 +58,13 @@ window.addEventListener('message', message => {
 });
 
 function render(payload) {
+  if (!payload) {
+    return;
+  }
   ReactDOM.render(
     <Document values={payload.values} />,
     document.getElementById('root'),
     () => {
-      // lastRenderedPayload = payload;
-      // window.location.hash = JSON.stringify(lastRenderedPayload);
       window.history.replaceState(
         null,
         null,
@@ -66,7 +77,9 @@ function render(payload) {
 
 function run() {
   const payload = getPayloadFromHashFragment();
-  render(payload);
+  if (payload) {
+    render(payload);
+  }
 }
 
 if (module.hot) {
